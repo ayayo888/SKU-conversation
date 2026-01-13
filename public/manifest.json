@@ -1,0 +1,20 @@
+{
+  "short_name": "SKUGen",
+  "name": "SKU Generator Pro",
+  "icons": [
+    {
+      "src": "https://cdn-icons-png.flaticon.com/512/726/726455.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "https://cdn-icons-png.flaticon.com/512/726/726455.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ],
+  "start_url": "./index.html",
+  "display": "standalone",
+  "theme_color": "#ffffff",
+  "background_color": "#F3F3F3"
+}

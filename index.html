@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>SKU Generator Pro</title>
+    
+    <!-- Tailwind CSS (CDN for quick preview) -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+      body {
+        font-family: "Segoe UI", "Microsoft YaHei", sans-serif;
+        background-color: #F3F3F3;
+        color: #000000;
+        -webkit-font-smoothing: antialiased;
+      }
+      
+      /* Windows 10 Style Scrollbar */
+      ::-webkit-scrollbar {
+        width: 12px;
+        height: 12px;
+      }
+      ::-webkit-scrollbar-track {
+        background: #F0F0F0;
+      }
+      ::-webkit-scrollbar-thumb {
+        background: #CDCDCD;
+        border: 3px solid #F0F0F0; /* Creates padding effect */
+        border-radius: 0px;
+      }
+      ::-webkit-scrollbar-thumb:hover {
+        background: #A6A6A6;
+      }
+      ::-webkit-scrollbar-thumb:active {
+        background: #606060;
+      }
+
+      /* Electron drag region */
+      .app-region-drag {
+        -webkit-app-region: drag;
+      }
+      .app-region-no-drag {
+        -webkit-app-region: no-drag;
+      }
+    </style>
+  <script type="importmap">
+{
+  "imports": {
+    "react": "https://esm.sh/react@^19.2.3",
+    "react-dom/": "https://esm.sh/react-dom@^19.2.3/",
+    "react/": "https://esm.sh/react@^19.2.3/",
+    "xlsx": "https://esm.sh/xlsx@^0.18.5",
+    "vite": "https://esm.sh/vite@^7.3.1",
+    "@vitejs/plugin-react": "https://esm.sh/@vitejs/plugin-react@^5.1.2"
+  }
+}
+</script>
+<link rel="stylesheet" href="/index.css">
+</head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/index.tsx"></script>
+  </body>
+</html>

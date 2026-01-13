@@ -1,0 +1,5 @@
+{
+  "name": "SKU Generator",
+  "description": "A specialized tool for generating and structuring e-commerce SKU data using OpenRouter/Gemini.",
+  "requestFramePermissions": []
+}
