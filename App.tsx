@@ -13,44 +13,7 @@ const HEADERS = [
   '透明素材图', '商品竖图', '商品长图', '主图视频'
 ];
 
-const INITIAL_ROWS: CleanerRow[] = [
-  {
-    _internal_id: 1,
-    checkStatus: 'unverified',
-    '商品名称': '茵曼2019夏装新款亚麻棉小清新提花文艺A摆简约百搭休闲半身裙女',
-    '商品价格': '178',
-    '商品拼单价': '177',
-    '商品划线价': '198',
-    '商品成本价': '220',
-    '商品库存': '4',
-    '商品重量': '',
-    '长': '',
-    '宽': '',
-    '高': '',
-    '商品商家编码': '1892110878',
-    '商品条形码': '',
-    'SKU规格': '颜色:浅灰;尺码:S',
-    'SKU划线价': '178',
-    'SKU价格': '178',
-    'SKU拼单价': '178',
-    'SKU成本价': '230',
-    'SKU库存': '1',
-    'SKU重量': '',
-    'SKU商家编码': '6941669851999',
-    'SKU条形码': '',
-    '商品主图': 'https://img.alicdn.com/imgextra/i1/554185355/O1CN011pQdONWFTuwRS4F_!!554185355.jpg,http://www.ipuhuo.com/zt02.jpg,http://www.ipuhuo.com/zt03.jpg,http://www.ipuhuo.com/zt04.jpg,http://www.ipuhuo.com/zt05.jpg',
-    'SKU主规格图': 'http://www.ipuhuo.com/zt01.jpg,http://www.ipuhuo.com/zt02.jpg,http://www.ipuhuo.com/zt03.jpg,http://www.ipuhuo.com/zt04.jpg,http://www.ipuhuo.com/zt05.jpg',
-    '商品详情': `<div><br/><table width="750" border="0"><tbody><tr class="firstRow"><td colspan="3"><a href="#" target="_blank"><img src="http://ipuhuo-img.com/JJZFR3/839be609-038a-4166-b38d-71eb9f629fd0.jpg" alt="" width="750" height="369"/></a></td></tr></tbody></table></div>`,
-    '商品类目': '女装/女士精品>>半身裙>>半身裙',
-    '商品分组': '女装>>2020春,风格>>时尚',
-    '商品属性': '作者:佚名;出版社:电子工业出版社',
-    '商品卖点': '',
-    '透明素材图': '',
-    '商品竖图': '',
-    '商品长图': '',
-    '主图视频': 'http://www.video.com/1.mp4'
-  }
-];
+const INITIAL_ROWS: CleanerRow[] = [];
 
 interface ProjectState {
   rows: CleanerRow[];

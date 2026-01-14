@@ -18,17 +18,35 @@ interface CleaningPanelProps {
   onClearAll: () => void;
 }
 
+// Default Image Configuration
+const DEFAULT_HEADER_IMAGES = [
+  'https://res.cloudinary.com/dl24hgcws/image/upload/v1768396654/nanobanana-image-1768396157529_z92tpg.png',
+  'https://res.cloudinary.com/dl24hgcws/image/upload/v1768313168/Press_and_hold_to_scan_c2l2pe.png',
+  ''
+];
+const DEFAULT_FOOTER_IMAGES = [
+  'https://res.cloudinary.com/dl24hgcws/image/upload/v1768300862/nanobanana-image-1768300794531_dwnrvf.jpg',
+  'https://res.cloudinary.com/dl24hgcws/image/upload/v1768313168/Press_and_hold_to_scan_1_rmn5hw.png',
+  ''
+];
+
 export const CleaningPanel: React.FC<CleaningPanelProps> = ({ currentRows, onAddRows, onRemoveRows, onUpdateStatus, onBatchUpdate, onClearAll }) => {
-  const [activeTab, setActiveTab] = useState<'initial' | 'renaming' | 'sku_optimization' | 'detail_images'>('initial');
+  const [activeTab, setActiveTab] = useState<'initial' | 'renaming' | 'sku_optimization' | 'detail_images' | 'product_groups'>('initial');
   const [apiKey, setApiKey] = useState('');
   const [inputText, setInputText] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [status, setStatus] = useState('');
   const [debugLog, setDebugLog] = useState<string | null>(null);
 
-  // Detail Images State
-  const [headerImages, setHeaderImages] = useState<string[]>(['', '', '']);
-  const [footerImages, setFooterImages] = useState<string[]>(['', '', '']);
+  // Detail Images State - Initialize with Defaults
+  const [headerImages, setHeaderImages] = useState<string[]>(DEFAULT_HEADER_IMAGES);
+  const [footerImages, setFooterImages] = useState<string[]>(DEFAULT_FOOTER_IMAGES);
+
+  // Product Group State
+  const [group1Parent, setGroup1Parent] = useState('');
+  const [group1Child, setGroup1Child] = useState('');
+  const [group2Parent, setGroup2Parent] = useState('');
+  const [group2Child, setGroup2Child] = useState('');
 
   // Reset Confirmation State
   const [isConfirmingReset, setIsConfirmingReset] = useState(false);
@@ -308,7 +326,7 @@ export const CleaningPanel: React.FC<CleaningPanelProps> = ({ currentRows, onAdd
        }
      } finally {
        setIsLoading(false);
-     }
+       }
   };
 
   const handleInsertDetailImages = () => {
@@ -358,6 +376,57 @@ export const CleaningPanel: React.FC<CleaningPanelProps> = ({ currentRows, onAdd
     }
   };
 
+  const handleUpdateProductGroups = () => {
+    if (currentRows.length === 0) { alert("表格无数据"); return; }
+
+    const groups: string[] = [];
+    
+    // Process Group 1
+    const g1P = group1Parent.trim();
+    const g1C = group1Child.trim();
+    
+    // Allow parent-only group
+    if (g1P) {
+      if (g1C) {
+        groups.push(`${g1P}>>${g1C}`);
+      } else {
+        groups.push(g1P);
+      }
+    }
+
+    // Process Group 2
+    const g2P = group2Parent.trim();
+    const g2C = group2Child.trim();
+    
+    // Allow parent-only group
+    if (g2P) {
+      if (g2C) {
+        groups.push(`${g2P}>>${g2C}`);
+      } else {
+        groups.push(g2P);
+      }
+    }
+
+    if (groups.length === 0) {
+      alert("请至少填写一个分组名称");
+      return;
+    }
+
+    const groupValue = groups.join(',');
+
+    setIsLoading(true);
+    setStatus("正在设置商品分组...");
+
+    const updates = currentRows.map(row => ({
+      id: row._internal_id!,
+      changes: { '商品分组': groupValue }
+    }));
+
+    onBatchUpdate(updates);
+    setStatus(`完成: 已更新 ${updates.length} 行商品分组为: ${groupValue}`);
+    setIsLoading(false);
+  };
+
   // Comprehensive Reset Function
   const handleResetClick = () => {
     if (!isConfirmingReset) {
@@ -367,8 +436,17 @@ export const CleaningPanel: React.FC<CleaningPanelProps> = ({ currentRows, onAdd
     setInputText('');
     setRenamePrompt(SYSTEM_PROMPT_RENAME); 
     setSkuPrompt(SYSTEM_PROMPT_SKU_OPTIMIZE);
-    setHeaderImages(['', '', '']);
-    setFooterImages(['', '', '']);
+    
+    // Reset to defaults instead of empty strings
+    setHeaderImages(DEFAULT_HEADER_IMAGES);
+    setFooterImages(DEFAULT_FOOTER_IMAGES);
+    
+    // Reset Groups
+    setGroup1Parent('');
+    setGroup1Child('');
+    setGroup2Parent('');
+    setGroup2Child('');
+
     setStatus('已重置所有数据');
     setDebugLog(null);
     setIsLoading(false);
@@ -424,6 +502,12 @@ export const CleaningPanel: React.FC<CleaningPanelProps> = ({ currentRows, onAdd
           className={`pb-2 text-[15px] font-semibold whitespace-nowrap transition-colors ${activeTab === 'detail_images' ? 'text-[#000000] border-b-2 border-[#0078D7]' : 'text-[#777777] hover:text-[#333333]'}`}
         >
           详情插图
+        </button>
+        <button 
+          onClick={() => setActiveTab('product_groups')}
+          className={`pb-2 text-[15px] font-semibold whitespace-nowrap transition-colors ${activeTab === 'product_groups' ? 'text-[#000000] border-b-2 border-[#0078D7]' : 'text-[#777777] hover:text-[#333333]'}`}
+        >
+          分组设置
         </button>
       </div>
 
@@ -590,6 +674,74 @@ export const CleaningPanel: React.FC<CleaningPanelProps> = ({ currentRows, onAdd
               className={`w-full py-1.5 text-white text-sm bg-[#0078D7] hover:bg-[#006CC1] active:bg-[#005A9E] disabled:bg-[#CCCCCC] disabled:text-[#666666] transition-colors border-none rounded-none`}
             >
               {isLoading ? '处理中...' : '开始批量插入'}
+            </button>
+          </div>
+        )}
+
+        {activeTab === 'product_groups' && (
+          <div className="flex flex-col h-full gap-4">
+             <div className="bg-white p-3 border border-[#D9D9D9]">
+               <h3 className="text-xs font-bold text-[#333333] mb-2">商品分组批量设置</h3>
+               <p className="text-[10px] text-[#666666] mb-4">
+                 格式: 上级分组{">>"}下级分组。多组之间用英文逗号分隔。<br/>
+                 如果只有上级分组，下级可留空。
+               </p>
+               
+               <div className="space-y-4">
+                 {/* Group 1 */}
+                 <div>
+                   <label className="block text-[11px] text-[#0078D7] font-semibold mb-1">分组 1</label>
+                   <div className="flex gap-2">
+                     <input 
+                       type="text"
+                       placeholder="上级分组1"
+                       value={group1Parent}
+                       onChange={(e) => setGroup1Parent(e.target.value)}
+                       className="flex-1 p-1.5 text-xs bg-white border border-[#CCCCCC] focus:border-[#0078D7] focus:ring-1 focus:ring-[#0078D7] outline-none"
+                     />
+                     <span className="text-[#999999] pt-1">{">>"}</span>
+                     <input 
+                       type="text"
+                       placeholder="下级分组1"
+                       value={group1Child}
+                       onChange={(e) => setGroup1Child(e.target.value)}
+                       className="flex-1 p-1.5 text-xs bg-white border border-[#CCCCCC] focus:border-[#0078D7] focus:ring-1 focus:ring-[#0078D7] outline-none"
+                     />
+                   </div>
+                 </div>
+
+                 {/* Group 2 */}
+                 <div>
+                   <label className="block text-[11px] text-[#0078D7] font-semibold mb-1">分组 2 (选填)</label>
+                   <div className="flex gap-2">
+                     <input 
+                       type="text"
+                       placeholder="上级分组2"
+                       value={group2Parent}
+                       onChange={(e) => setGroup2Parent(e.target.value)}
+                       className="flex-1 p-1.5 text-xs bg-white border border-[#CCCCCC] focus:border-[#0078D7] focus:ring-1 focus:ring-[#0078D7] outline-none"
+                     />
+                     <span className="text-[#999999] pt-1">{">>"}</span>
+                     <input 
+                       type="text"
+                       placeholder="下级分组2"
+                       value={group2Child}
+                       onChange={(e) => setGroup2Child(e.target.value)}
+                       className="flex-1 p-1.5 text-xs bg-white border border-[#CCCCCC] focus:border-[#0078D7] focus:ring-1 focus:ring-[#0078D7] outline-none"
+                     />
+                   </div>
+                 </div>
+               </div>
+             </div>
+
+             <div className="flex-1"></div>
+
+             <button 
+              onClick={handleUpdateProductGroups}
+              disabled={isLoading || currentRows.length === 0}
+              className={`w-full py-1.5 text-white text-sm bg-[#0078D7] hover:bg-[#006CC1] active:bg-[#005A9E] disabled:bg-[#CCCCCC] disabled:text-[#666666] transition-colors border-none rounded-none`}
+            >
+              {isLoading ? '处理中...' : '开始批量设置'}
             </button>
           </div>
         )}

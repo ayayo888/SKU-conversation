@@ -284,6 +284,16 @@ export const DataGrid: React.FC<DataGridProps> = ({ data, headers, onImportData,
       return;
     }
 
+    // Determine filename from the first row's '商品名称'
+    let fileName = 'sku_data_export';
+    const firstRowName = filteredData[0]['商品名称'];
+    if (firstRowName && typeof firstRowName === 'string') {
+       const cleanName = firstRowName.trim().replace(/[\\/:*?"<>|]/g, "_").slice(0, 100);
+       if (cleanName) {
+         fileName = cleanName;
+       }
+    }
+
     const exportHeaders = headers.filter(h => h !== '状态');
 
     const instructionRow = exportHeaders.map(h => HEADER_INSTRUCTIONS[h] || "");
@@ -304,7 +314,7 @@ export const DataGrid: React.FC<DataGridProps> = ({ data, headers, onImportData,
     const ws = utils.aoa_to_sheet(exportData);
     const wb = utils.book_new();
     utils.book_append_sheet(wb, ws, "Sheet1");
-    writeFile(wb, `sku_data_export.${format === 'csv' ? 'csv' : 'xlsx'}`);
+    writeFile(wb, `${fileName}.${format === 'csv' ? 'csv' : 'xlsx'}`);
   };
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
